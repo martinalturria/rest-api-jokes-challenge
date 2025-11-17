@@ -1,6 +1,8 @@
 import { JokeService } from '../src/services/JokeService';
 import { IJokeRepository } from '../src/models/IJokeRepository';
 import { ExternalJokeService } from '../src/services/ExternalJokeService';
+import { ValidationError } from '../src/exceptions/ValidationError';
+import { NotFoundError } from '../src/exceptions/NotFoundError';
 import { ERROR_MESSAGES } from '../src/constants/messages';
 
 describe('JokeService', () => {
@@ -49,7 +51,8 @@ describe('JokeService', () => {
       expect(mockExternalService.getDadJoke).toHaveBeenCalled();
     });
 
-    it('should throw error for invalid type', async () => {
+    it('should throw ValidationError for invalid type', async () => {
+      await expect(jokeService.getJokeByType('Invalid')).rejects.toThrow(ValidationError);
       await expect(jokeService.getJokeByType('Invalid')).rejects.toThrow(
         ERROR_MESSAGES.JOKE.INVALID_TYPE
       );
@@ -118,9 +121,10 @@ describe('JokeService', () => {
       expect(mockRepository.update).toHaveBeenCalledWith(1, updateDto);
     });
 
-    it('should throw error when joke not found', async () => {
+    it('should throw NotFoundError when joke not found', async () => {
       mockRepository.update.mockResolvedValue(null);
 
+      await expect(jokeService.updateJoke(999, { text: 'Updated' })).rejects.toThrow(NotFoundError);
       await expect(jokeService.updateJoke(999, { text: 'Updated' })).rejects.toThrow(
         ERROR_MESSAGES.JOKE.NOT_FOUND
       );
@@ -137,9 +141,10 @@ describe('JokeService', () => {
       expect(mockRepository.delete).toHaveBeenCalledWith(1);
     });
 
-    it('should throw error when joke not found', async () => {
+    it('should throw NotFoundError when joke not found', async () => {
       mockRepository.delete.mockResolvedValue(false);
 
+      await expect(jokeService.deleteJoke(999)).rejects.toThrow(NotFoundError);
       await expect(jokeService.deleteJoke(999)).rejects.toThrow(
         ERROR_MESSAGES.JOKE.NOT_FOUND
       );
@@ -163,9 +168,10 @@ describe('JokeService', () => {
       expect(result).toEqual(mockJoke);
     });
 
-    it('should throw error when joke not found', async () => {
+    it('should throw NotFoundError when joke not found', async () => {
       mockRepository.findById.mockResolvedValue(null);
 
+      await expect(jokeService.getJokeById(999)).rejects.toThrow(NotFoundError);
       await expect(jokeService.getJokeById(999)).rejects.toThrow(
         ERROR_MESSAGES.JOKE.NOT_FOUND
       );

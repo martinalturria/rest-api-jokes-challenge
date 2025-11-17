@@ -51,6 +51,13 @@ npm start
 
 The API will be available at `http://localhost:3000`
 
+## Documentation
+
+Interactive API documentation is available at:
+```
+http://localhost:3000/api-docs
+```
+
 ## Development
 
 Run in development mode with hot reload:
@@ -67,19 +74,65 @@ npm test
 
 ## API Endpoints
 
+All endpoints return standardized responses with the following structure:
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": { /* endpoint-specific data */ },
+  "timestamp": "2025-11-17T14:56:20.212Z"
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Error description",
+    "errorCode": "ERROR_CODE",
+    "statusCode": 400
+  },
+  "timestamp": "2025-11-17T14:56:20.212Z"
+}
+```
+
 ### Jokes Endpoints
 
 #### GET /chistes
 Get a random joke from both APIs
 
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "joke": "Why did the chicken cross the road?"
+  },
+  "timestamp": "2025-11-17T14:56:20.212Z"
+}
+```
+
 #### GET /chistes/:type
 Get a joke from a specific API
 - `type`: `Chuck` or `Dad`
-- Returns 404 if type is invalid
+- Returns ValidationError if type is invalid
 
 Example:
 ```bash
 curl http://localhost:3000/chistes/Chuck
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "joke": "Chuck Norris can divide by zero."
+  },
+  "timestamp": "2025-11-17T14:56:20.212Z"
+}
 ```
 
 #### POST /chistes
@@ -131,13 +184,17 @@ Get 5 paired jokes from Chuck Norris and Dad Jokes APIs
 
 Response:
 ```json
-[
-  {
-    "chuck": "Chuck Norris counted to infinity. Twice.",
-    "dad": "Why did the math book look sad? Because it had too many problems.",
-    "combinado": "Chuck Norris counted to infinity. Also, the math book had too many problems."
-  }
-]
+{
+  "success": true,
+  "data": [
+    {
+      "chuck": "Chuck Norris counted to infinity. Twice.",
+      "dad": "Why did the math book look sad? Because it had too many problems.",
+      "combinado": "Chuck Norris counted to infinity. Also, the math book had too many problems."
+    }
+  ],
+  "timestamp": "2025-11-17T14:56:20.212Z"
+}
 ```
 
 Example:
@@ -161,8 +218,12 @@ curl "http://localhost:3000/matematico/mcm?numbers=12,18,24"
 Response:
 ```json
 {
-  "numbers": [12, 18, 24],
-  "lcm": 72
+  "success": true,
+  "data": {
+    "numbers": [12, 18, 24],
+    "lcm": 72
+  },
+  "timestamp": "2025-11-17T14:56:20.212Z"
 }
 ```
 
@@ -180,8 +241,12 @@ curl "http://localhost:3000/matematico/increment?number=5"
 Response:
 ```json
 {
-  "original": 5,
-  "result": 6
+  "success": true,
+  "data": {
+    "original": 5,
+    "result": 6
+  },
+  "timestamp": "2025-11-17T14:56:20.212Z"
 }
 ```
 
@@ -249,6 +314,15 @@ database/            SQL initialization scripts
 - **Liskov Substitution**: Interfaces over implementations
 - **Interface Segregation**: Small, focused interfaces
 - **Dependency Inversion**: Depend on abstractions, not concretions
+
+### Enterprise Patterns
+
+- **Custom Exceptions**: Typed exceptions (NotFoundError, ValidationError, ExternalApiError)
+- **DTO Pattern**: Response DTOs for consistent API contracts
+- **ApiResponse Wrapper**: Standardized response format across all endpoints
+- **Enum Types**: Type-safe enums for joke types
+- **Structured Logging**: Winston with contextual information
+- **Error Handling**: Centralized error handler with proper HTTP status codes
 
 ## External APIs
 

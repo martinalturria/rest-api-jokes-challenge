@@ -1,4 +1,5 @@
 import { MathService } from '../src/services/MathService';
+import { ValidationError } from '../src/exceptions/ValidationError';
 
 describe('MathService', () => {
   let mathService: MathService;
@@ -33,15 +34,18 @@ describe('MathService', () => {
       expect(result).toBe(105);
     });
 
-    it('should throw error for empty array', () => {
+    it('should throw ValidationError for empty array', () => {
+      expect(() => mathService.calculateLCM([])).toThrow(ValidationError);
       expect(() => mathService.calculateLCM([])).toThrow('At least one number is required');
     });
 
-    it('should throw error for negative numbers', () => {
+    it('should throw ValidationError for negative numbers', () => {
+      expect(() => mathService.calculateLCM([-5, 10])).toThrow(ValidationError);
       expect(() => mathService.calculateLCM([-5, 10])).toThrow('All numbers must be positive');
     });
 
-    it('should throw error for zero', () => {
+    it('should throw ValidationError for zero', () => {
+      expect(() => mathService.calculateLCM([0, 10])).toThrow(ValidationError);
       expect(() => mathService.calculateLCM([0, 10])).toThrow('All numbers must be positive');
     });
   });

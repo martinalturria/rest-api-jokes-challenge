@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { MathService } from '../services/MathService';
+import { ApiResponse } from '../models/ApiResponse';
+import { LcmResponseDto, IncrementResponseDto } from '../dtos/MathResponseDto';
 
 export class MathController {
   constructor(private mathService: MathService) {}
@@ -15,10 +17,12 @@ export class MathController {
 
       const lcm = this.mathService.calculateLCM(numArray);
 
-      res.json({
+      const response: LcmResponseDto = {
         numbers: numArray,
         lcm,
-      });
+      };
+
+      res.json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }
@@ -35,10 +39,12 @@ export class MathController {
 
       const result = this.mathService.increment(num);
 
-      res.json({
+      const response: IncrementResponseDto = {
         original: num,
         result,
-      });
+      };
+
+      res.json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }

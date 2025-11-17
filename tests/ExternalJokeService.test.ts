@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ExternalJokeService } from '../src/services/ExternalJokeService';
+import { ExternalApiError } from '../src/exceptions/ExternalApiError';
 import { ERROR_MESSAGES } from '../src/constants/messages';
 
 jest.mock('axios');
@@ -29,9 +30,10 @@ describe('ExternalJokeService', () => {
       );
     });
 
-    it('should throw error when API fails', async () => {
+    it('should throw ExternalApiError when API fails', async () => {
       mockedAxios.get.mockRejectedValue(new Error('Network error'));
 
+      await expect(service.getChuckNorrisJoke()).rejects.toThrow(ExternalApiError);
       await expect(service.getChuckNorrisJoke()).rejects.toThrow(ERROR_MESSAGES.EXTERNAL_API.CHUCK_NORRIS_ERROR);
     });
   });
@@ -54,9 +56,10 @@ describe('ExternalJokeService', () => {
       );
     });
 
-    it('should throw error when API fails', async () => {
+    it('should throw ExternalApiError when API fails', async () => {
       mockedAxios.get.mockRejectedValue(new Error('Network error'));
 
+      await expect(service.getDadJoke()).rejects.toThrow(ExternalApiError);
       await expect(service.getDadJoke()).rejects.toThrow(ERROR_MESSAGES.EXTERNAL_API.DAD_JOKE_ERROR);
     });
   });

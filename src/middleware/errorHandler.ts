@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from '../constants/messages';
+import { BaseError } from '../exceptions/BaseError';
+import { ApiResponse } from '../models/ApiResponse';
 import logger from '../config/logger';
 
 export const errorHandler = (
@@ -8,30 +10,38 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  logger.error('Error:', { message: err.message, stack: err.stack });
+  if (err instanceof BaseError) {
+    const errorResponse = err.serializeErrors();
+    logger.error('Application Error', {
+      errorCode: errorResponse.errorCode,
+      message: errorResponse.message,
+      statusCode: errorResponse.statusCode,
+      path: req.path,
+      method: req.method,
+    });
 
-  const statusCode = determineStatusCode(err.message);
+    res.status(errorResponse.statusCode).json(
+      ApiResponse.error(
+        errorResponse.message,
+        errorResponse.errorCode,
+        errorResponse.statusCode
+      )
+    );
+    return;
+  }
 
-  res.status(statusCode).json({
-    error: {
-      message: err.message,
-      status: statusCode,
-    },
+  logger.error('Unexpected Error', {
+    message: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method,
   });
-};
 
-const determineStatusCode = (message: string): number => {
-  if (message.includes('not found') || message.includes('Not found')) {
-    return HTTP_STATUS.NOT_FOUND;
-  }
-
-  if (
-    message.includes('required') ||
-    message.includes('invalid') ||
-    message.includes('Invalid')
-  ) {
-    return HTTP_STATUS.BAD_REQUEST;
-  }
-
-  return HTTP_STATUS.INTERNAL_SERVER_ERROR;
+  res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(
+    ApiResponse.error(
+      'Internal server error',
+      'INTERNAL_ERROR',
+      HTTP_STATUS.INTERNAL_SERVER_ERROR
+    )
+  );
 };

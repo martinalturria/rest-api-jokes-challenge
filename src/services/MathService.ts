@@ -1,13 +1,14 @@
+import { ValidationError } from '../exceptions/ValidationError';
 import { ERROR_MESSAGES } from '../constants/messages';
 
 export class MathService {
   calculateLCM(numbers: number[]): number {
     if (numbers.length === 0) {
-      throw new Error(ERROR_MESSAGES.MATH.EMPTY_ARRAY);
+      throw new ValidationError(ERROR_MESSAGES.MATH.EMPTY_ARRAY);
     }
 
     if (numbers.some(num => num <= 0)) {
-      throw new Error(ERROR_MESSAGES.MATH.POSITIVE_REQUIRED);
+      throw new ValidationError(ERROR_MESSAGES.MATH.POSITIVE_REQUIRED);
     }
 
     return numbers.reduce((acc, num) => this.lcm(acc, num));

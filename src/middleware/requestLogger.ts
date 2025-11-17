@@ -10,12 +10,20 @@ export const requestLogger = (
 
   res.on('finish', () => {
     const duration = Date.now() - start;
-    logger.info({
+    const logData = {
       method: req.method,
-      url: req.url,
-      status: res.statusCode,
+      path: req.path,
+      statusCode: res.statusCode,
       duration: `${duration}ms`,
-    });
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+    };
+
+    if (res.statusCode >= 400) {
+      logger.error('Request Failed', logData);
+    } else {
+      logger.info('Request Completed', logData);
+    }
   });
 
   next();

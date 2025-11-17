@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ChuckNorrisJoke, DadJoke, PairedJoke } from '../models/ExternalJoke';
+import { ExternalApiError } from '../exceptions/ExternalApiError';
 import { EXTERNAL_APIS, API_CONFIG } from '../constants/api';
 import { ERROR_MESSAGES } from '../constants/messages';
 
@@ -11,7 +12,7 @@ export class ExternalJokeService {
       });
       return response.data.value;
     } catch (error) {
-      throw new Error(ERROR_MESSAGES.EXTERNAL_API.CHUCK_NORRIS_ERROR);
+      throw new ExternalApiError(ERROR_MESSAGES.EXTERNAL_API.CHUCK_NORRIS_ERROR);
     }
   }
 
@@ -23,7 +24,7 @@ export class ExternalJokeService {
       });
       return response.data.joke;
     } catch (error) {
-      throw new Error(ERROR_MESSAGES.EXTERNAL_API.DAD_JOKE_ERROR);
+      throw new ExternalApiError(ERROR_MESSAGES.EXTERNAL_API.DAD_JOKE_ERROR);
     }
   }
 

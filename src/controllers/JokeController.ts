@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { JokeService } from '../services/JokeService';
-import { HTTP_STATUS } from '../constants/messages';
+import { ApiResponse } from '../models/ApiResponse';
+import { JokeResponseDto, JokeEntityResponseDto, DeleteJokeResponseDto } from '../dtos/JokeResponseDto';
+import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/messages';
 
 export class JokeController {
   constructor(private jokeService: JokeService) {}
@@ -14,7 +16,8 @@ export class JokeController {
       const { type } = req.params;
       const joke = await this.jokeService.getJokeByType(type);
 
-      res.json({ joke });
+      const response: JokeResponseDto = { joke };
+      res.json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }
@@ -28,7 +31,8 @@ export class JokeController {
     try {
       const joke = await this.jokeService.getRandomJoke();
 
-      res.json({ joke });
+      const response: JokeResponseDto = { joke };
+      res.json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }
@@ -42,7 +46,7 @@ export class JokeController {
     try {
       const pairedJokes = await this.jokeService.getPairedJokes();
 
-      res.json(pairedJokes);
+      res.json(ApiResponse.success(pairedJokes));
     } catch (error) {
       next(error);
     }
@@ -57,7 +61,16 @@ export class JokeController {
       const { text, userId, categoryId } = req.body;
       const joke = await this.jokeService.createJoke({ text, userId, categoryId });
 
-      res.status(HTTP_STATUS.CREATED).json(joke);
+      const response: JokeEntityResponseDto = {
+        id: joke.id,
+        text: joke.text,
+        userId: joke.userId,
+        categoryId: joke.categoryId,
+        createdAt: joke.createdAt,
+        updatedAt: joke.updatedAt,
+      };
+
+      res.status(HTTP_STATUS.CREATED).json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }
@@ -73,7 +86,16 @@ export class JokeController {
       const { text } = req.body;
       const joke = await this.jokeService.updateJoke(id, { text });
 
-      res.json(joke);
+      const response: JokeEntityResponseDto = {
+        id: joke.id,
+        text: joke.text,
+        userId: joke.userId,
+        categoryId: joke.categoryId,
+        createdAt: joke.createdAt,
+        updatedAt: joke.updatedAt,
+      };
+
+      res.json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }
@@ -88,7 +110,11 @@ export class JokeController {
       const id = parseInt(req.params.number);
       await this.jokeService.deleteJoke(id);
 
-      res.status(HTTP_STATUS.OK).json({ message: 'Joke deleted successfully' });
+      const response: DeleteJokeResponseDto = {
+        message: SUCCESS_MESSAGES.JOKE.DELETED
+      };
+
+      res.status(HTTP_STATUS.OK).json(ApiResponse.success(response));
     } catch (error) {
       next(error);
     }

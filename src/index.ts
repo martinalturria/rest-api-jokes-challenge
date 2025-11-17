@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express, { Application } from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 import mathRoutes from './routes/mathRoutes';
 import jokeRoutes from './routes/jokeRoutes';
 import { requestLogger } from './middleware/requestLogger';
@@ -11,6 +13,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(requestLogger);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
