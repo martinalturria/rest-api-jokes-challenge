@@ -35,6 +35,8 @@ npm install
 docker-compose up -d
 ```
 
+PostgreSQL will be available at `localhost:5444`
+
 4. Start the application:
 ```bash
 npm start
