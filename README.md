@@ -30,14 +30,21 @@ cd rest-api-jokes-challenge
 npm install
 ```
 
-3. Start PostgreSQL with Docker:
+3. Configure environment variables:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` if needed (default values work with Docker setup)
+
+4. Start PostgreSQL with Docker:
 ```bash
 docker-compose up -d
 ```
 
 PostgreSQL will be available at `localhost:5444`
 
-4. Start the application:
+5. Start the application:
 ```bash
 npm start
 ```

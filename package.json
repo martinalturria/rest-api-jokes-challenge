@@ -23,6 +23,7 @@
   "homepage": "https://github.com/martinalturria/rest-api-jokes-challenge#readme",
   "dependencies": {
     "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "pg": "^8.16.3",
     "winston": "^3.18.3"
