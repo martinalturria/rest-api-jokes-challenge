@@ -211,18 +211,37 @@ WHERE u.name = 'Manolito' AND c.name = 'humor negro';
 
 ## Project Structure
 
+Clean Architecture with SOLID principles:
+
 ```
 src/
-├── controllers/     API endpoint handlers
-├── services/        Business logic
-├── models/          Database models
-├── routes/          Route definitions
-├── config/          Configuration
-└── index.ts         Entry point
+├── controllers/     HTTP request/response handlers
+├── services/        Business logic layer
+├── repositories/    Data access layer
+├── models/          Interfaces and types
+├── routes/          API route definitions
+├── config/          Configuration files
+├── middleware/      Error handling, logging
+└── index.ts         Application entry point
 
-tests/               Unit tests
+tests/               Unit and integration tests
 database/            SQL initialization scripts
 ```
+
+### Architecture Layers
+
+- **Controllers**: Handle HTTP requests/responses, validate input, call services
+- **Services**: Implement business logic, orchestrate operations
+- **Repositories**: Handle database operations, data persistence
+- **Models**: Define interfaces, types, and data structures
+
+### SOLID Principles Applied
+
+- **Single Responsibility**: Each class has one reason to change
+- **Open/Closed**: Open for extension, closed for modification
+- **Liskov Substitution**: Interfaces over implementations
+- **Interface Segregation**: Small, focused interfaces
+- **Dependency Inversion**: Depend on abstractions, not concretions
 
 ## External APIs
 
